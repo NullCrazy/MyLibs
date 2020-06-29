@@ -1,0 +1,8 @@
+include ':platform:common'
+include ':platform:scan'
+include ':platform:base'
+include ':platform:utils'
+include ':platform:lchttp2'
+include ':platform'
+include ':app'
+rootProject.name = "MyLibs"

@@ -1,0 +1,48 @@
+apply from: './buildscript/depends.gradle'
+ext {
+    // 构建相关
+    def buildToolsVer = "29.0.3"
+    def androidMinSdkVer = 21
+    def androidTargetSdkVer = 26
+    def androidCompileSdkVer = 29
+
+    // 基础的构建配置
+    gradle_build_base = {
+        projectImp, version_code = 1, version_name = "1.0", androidPlugin = 'com.android.library' ->
+            println("=============>project:${projectImp.name} start<================")
+            projectImp.apply {
+                plugin androidPlugin
+            }
+
+            projectImp.android {
+                buildToolsVersion buildToolsVer
+                compileSdkVersion androidCompileSdkVer
+                defaultConfig {
+                    minSdkVersion androidMinSdkVer
+                    targetSdkVersion androidTargetSdkVer
+                    versionCode version_code
+                    versionName version_name
+                    multiDexEnabled true
+                    sourceSets {
+                        main {
+                            jniLibs.srcDirs = [projectImp.getProjectDir().toString() + '/libs']
+                        }
+                    }
+                    consumerProguardFiles projectImp.getProjectDir().toString() + '/proguard-rules.pro'
+                }
+
+                buildTypes {
+
+                }
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+                resourcePrefix "${project.name.toLowerCase().replaceAll("-", "_")}_"
+            }
+
+            projectImp.dependencies {
+                implementation fileTree(dir: projectImp.getProjectDir().toString() + '/libs', include: ['*.jar', '*.aar'])
+            }
+    }
+}

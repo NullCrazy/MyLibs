@@ -1,0 +1,7 @@
+gradle_build_base this
+
+dependencies {
+    implementation sdk_android
+    implementation sdk_view_injector
+    implementation sdk_rxjava
+}

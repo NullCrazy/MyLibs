@@ -1,0 +1,10 @@
+gradle_build_base this
+
+dependencies {
+    implementation sdk_json
+    implementation sdk_android
+    //logger所需的依赖
+    implementation 'com.orhanobut:logger:1.15'
+    //检测多进程
+    implementation 'com.jaredrummler:android-processes:1.1.1'
+}

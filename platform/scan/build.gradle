@@ -1,0 +1,4 @@
+gradle_build_base this
+
+dependencies {
+}

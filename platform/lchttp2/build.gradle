@@ -1,0 +1,10 @@
+gradle_build_base this
+
+dependencies {
+    implementation sdk_android
+    implementation sdk_json
+    implementation sdk_rxjava
+    implementation sdk_http
+    implementation sdk_bcprov
+    implementation project(path: ':platform:utils')
+}

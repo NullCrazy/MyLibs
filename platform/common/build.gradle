@@ -1,0 +1,7 @@
+gradle_build_base this
+
+dependencies {
+    implementation sdk_android
+    implementation sdk_rxjava
+    implementation project(":platform:lchttp2")
+}
