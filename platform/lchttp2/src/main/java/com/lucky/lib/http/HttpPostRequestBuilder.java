@@ -1,31 +1,19 @@
 package com.lucky.lib.http;
 
-import android.text.TextUtils;
-
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Request;
-
-import static com.lucky.lib.http.MediaType.MEDIA_TYPE_FORM;
-import static com.lucky.lib.http.MediaType.MEDIA_TYPE_JSON;
-import static com.lucky.lib.http.MediaType.MEDIA_TYPE_MULTIPART_FORM;
 
 /**
  * 作用描述: post 请求类
@@ -35,32 +23,14 @@ import static com.lucky.lib.http.MediaType.MEDIA_TYPE_MULTIPART_FORM;
  */
 public class HttpPostRequestBuilder extends AbstractLcRequest {
 
-    /**
-     * 提交形式
-     */
-    public static final int PUT = 1;
-    public static final int DELETE = 2;
-    public static final int POST = 3;
-
-    @IntDef({PUT, DELETE, POST})
-    @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface REQUEST_TYPE {
-    }
-
-    private List<FileBean> files;
+    private Map<String, File> files;
     private Map<String, MediaType> mediaTypes;
     private JSONObject paramsGet;
     private HttpRequestBody.IProgressListener progressListener;
-    private @REQUEST_TYPE
-    int type = POST;
-
-    protected okhttp3.MediaType mediaType;
 
 
-    public HttpPostRequestBuilder(HttpClient httpClient, @REQUEST_TYPE int type) {
+    public HttpPostRequestBuilder(HttpClient httpClient) {
         super(httpClient);
-        this.type = type;
     }
 
     @Override
@@ -77,15 +47,12 @@ public class HttpPostRequestBuilder extends AbstractLcRequest {
      */
     public HttpPostRequestBuilder file(String key, File file, MediaType mediaType) {
         if (files == null) {
-            files = new ArrayList<>(2);
+            files = new HashMap<>(2);
         }
         if (mediaTypes == null) {
             mediaTypes = new HashMap<>(2);
         }
-        FileBean fileBean = new FileBean();
-        fileBean.key  = key;
-        fileBean.value = file;
-        files.add(fileBean);
+        files.put(key, file);
         mediaTypes.put(key, mediaType);
         return this;
     }
@@ -108,60 +75,24 @@ public class HttpPostRequestBuilder extends AbstractLcRequest {
         if (head != null) {
             builder.headers(head);
         }
-        HttpRequestBody requestBody =null;
+        HttpRequestBody requestBody;
 
-        Map<String, Object> map = null;
+        Map<String, String> map = null;
         //有get参数 ，无post参数时，只在get参数上增加uid /cid 等公共参数， post不增加公共参数
         if (paramsGet == null || paramsGet.isEmpty() || !params().isEmpty()) {
             map = getRequestParams(params());
         }
-        if (mediaType == null) {
-            if ((files != null && !files.isEmpty())) {
-                requestBody = HttpRequestBody.createWithMultiForm(map, files, mediaTypes, progressListener);
-            } else {
-                requestBody = HttpRequestBody.createWithJson(JSON.toJSONString(map));
-
-            }
+        if (files != null && !files.isEmpty()) {
+            requestBody = HttpRequestBody.createWithMultiForm(map, files, mediaTypes,progressListener);
         } else {
-            if (MEDIA_TYPE_JSON == mediaType) {
-                requestBody = HttpRequestBody.createWithJson(JSON.toJSONString(map));
-            } else if (MEDIA_TYPE_FORM == mediaType) {
-                requestBody = HttpRequestBody.createWithFormEncode(map);
-            } else if (MEDIA_TYPE_MULTIPART_FORM == mediaType) {
-                requestBody = HttpRequestBody.createWithMultiForm(map, files, mediaTypes, progressListener);
-            }
+            requestBody = HttpRequestBody.createWithFormEncode(map);
         }
         //增加网络请求头的event_id
         String time = String.valueOf(System.currentTimeMillis());
-        builder.header(EVENT_ID, time);
-        String uid = mClient.uid();
-        if (!TextUtils.isEmpty(uid)) {
-            builder.header(UID, "bearer " + uid);
-        }
-
+        builder.header(EVENT_ID,time);
         builder.tag(tag());
-        switch (type) {
-            case PUT:
-                builder.put(requestBody.getRequestBody());
-                break;
-            case DELETE:
-                builder.delete(requestBody.getRequestBody());
-                break;
-            case POST:
-            default:
-                builder.post(requestBody.getRequestBody());
-                break;
-        }
+        builder.post(requestBody.getRequestBody());
         return builder.build();
-    }
-
-    public MediaType getMediaType() {
-        return mediaType;
-    }
-
-    public HttpPostRequestBuilder setMediaType(MediaType mediaType) {
-        this.mediaType = mediaType;
-        return this;
     }
 
     @NonNull
@@ -173,9 +104,9 @@ public class HttpPostRequestBuilder extends AbstractLcRequest {
             return urlSB.toString();
         }
         urlSB.append("?");
-        Map<String, Object> requestParams = getRequestParams(paramsGet);
-        for (Map.Entry<String, Object> entry : requestParams.entrySet()) {
-            if (!TextUtils.isEmpty(entry.getKey()) && !TextUtils.isEmpty(JSON.toJSONString(entry.getValue()))) {
+        Map<String, String> requestParams = getRequestParams(paramsGet);
+        for (Map.Entry<String, String> entry : requestParams.entrySet()) {
+            if (!TextUtils.isEmpty(entry.getKey()) && !TextUtils.isEmpty(entry.getValue())) {
                 urlSB.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
         }
@@ -282,9 +213,4 @@ public class HttpPostRequestBuilder extends AbstractLcRequest {
     /**
      * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^为了外部方便调用重写上面方法^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
      */
-
-    public static class FileBean{
-        String key;
-        File value;
-    }
 }

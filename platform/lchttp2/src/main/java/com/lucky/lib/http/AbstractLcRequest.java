@@ -10,11 +10,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.lucky.lib.http.utils.HttpLog;
+import com.lucky.lib.http.utils.HttpSignUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -236,14 +238,14 @@ public abstract class AbstractLcRequest implements IHttpRequest, IHttpParams {
      * @param params 请求参数
      * @return 参数的map
      */
-    protected Map<String, Object> getRequestParams(@NonNull Map<String, Object> params) {
+//    protected Map<String, Object> getRequestParams(@NonNull Map<String, Object> params) {
 //        HashMap<String, String> requestParams = new HashMap<>(INIT_SIZE);
 //        for (Map.Entry<String, Object> entry : params.entrySet()) {
 //            requestParams.put(entry.getKey(),String.valueOf(entry.getValue()));
 //        }
-        return params;
-    }
-   /* protected Map<String, String> getRequestParams(@NonNull Map<String, Object> params) {
+//        return params;
+//    }
+    protected Map<String, String> getRequestParams(@NonNull Map<String, Object> params) {
 
         HashMap<String, String> requestParams = new HashMap<>(INIT_SIZE);
         //version 版本号
@@ -269,7 +271,7 @@ public abstract class AbstractLcRequest implements IHttpRequest, IHttpParams {
         //sign ，每次请求的签名
         requestParams.put(SIGN, HttpSignUtils.getSign(cid, uid, q, HttpAesCrypto.getSignKey()));
         return requestParams;
-    }*/
+    }
 
     /**
      * 返回Request参数

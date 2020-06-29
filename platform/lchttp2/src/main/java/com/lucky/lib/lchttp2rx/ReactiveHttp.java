@@ -1,7 +1,6 @@
 package com.lucky.lib.lchttp2rx;
 
 import com.lucky.lib.http.HttpClient;
-import com.lucky.lib.http.HttpPostRequestBuilder;
 import com.lucky.lib.lchttp2rx.builder.GetBuilder;
 import com.lucky.lib.lchttp2rx.builder.PostBuilder;
 
@@ -35,7 +34,7 @@ public final class ReactiveHttp {
      * post请求
      */
     public static PostBuilder postRequest() {
-        return new PostBuilder(get(), HttpPostRequestBuilder.POST);
+        return new PostBuilder(get());
     }
 
     private static HttpClient get() {

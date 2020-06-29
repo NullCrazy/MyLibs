@@ -1,15 +1,11 @@
 package com.lucky.lib.http;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.alibaba.fastjson.JSON;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.FormBody;
@@ -23,7 +19,6 @@ import okio.Source;
 
 import static com.lucky.lib.http.MediaType.MEDIA_TYPE_JSON;
 import static com.lucky.lib.http.MediaType.MEDIA_TYPE_MARKDOWN;
-
 
 /**
  * 作用描述: post 提交时使用的requestBody
@@ -87,12 +82,12 @@ public final class HttpRequestBody {
      * @param kv
      * @return
      */
-    public static HttpRequestBody createWithFormEncode(Map<String, Object> kv) {
+    public static HttpRequestBody createWithFormEncode(Map<String, String> kv) {
         if (kv != null && !kv.isEmpty()) {
             FormBody.Builder builder = new FormBody.Builder();
 
-            for (Map.Entry<String, Object> entry : kv.entrySet()) {
-                builder.add(entry.getKey(), JSON.toJSONString(entry.getValue()));
+            for (Map.Entry<String, String> entry : kv.entrySet()) {
+                builder.add(entry.getKey(), entry.getValue());
             }
 
             return new HttpRequestBody(builder.build());
@@ -107,8 +102,8 @@ public final class HttpRequestBody {
      * @param kv 键值对map
      * @return
      */
-    public static HttpRequestBody createWithMultiForm(Map<String, Object> kv) {
-        return createWithMultiForm(kv, (String) null, (File) null, (MediaType) null, null);
+    public static HttpRequestBody createWithMultiForm(Map<String, String> kv) {
+        return createWithMultiForm(kv, (String) null, (File) null, (MediaType) null,null);
     }
 
     /**
@@ -128,12 +123,12 @@ public final class HttpRequestBody {
      *
      * @return
      */
-    public static HttpRequestBody createWithMultiForm(Map<String, Object> kv, String fileKey, File file, MediaType fileType, IProgressListener progressListener) {
+    public static HttpRequestBody createWithMultiForm(Map<String, String> kv, String fileKey, File file, MediaType fileType, IProgressListener progressListener) {
         Map<String, File> map = new HashMap<>(2);
-        map.put(fileKey, file);
-        Map<String, MediaType> mediaTypes = new HashMap<>(2);
-        mediaTypes.put(fileKey, fileType);
-        return createWithMultiForm(kv, map, mediaTypes, progressListener);
+        map.put(fileKey,file);
+        Map<String, MediaType> mediaTypes  = new HashMap<>(2);
+        mediaTypes.put(fileKey,fileType);
+        return createWithMultiForm(kv,map,mediaTypes,progressListener);
     }
 
     /**
@@ -144,15 +139,15 @@ public final class HttpRequestBody {
      * @param mediaTypes mediaTypes
      * @return LcRequestBody
      */
-    public static HttpRequestBody createWithMultiForm(@Nullable Map<String, Object> kv, Map<String, File> files, Map<String, MediaType> mediaTypes, final IProgressListener progressListener) {
+    public static HttpRequestBody createWithMultiForm(@Nullable Map<String, String> kv, Map<String, File> files, Map<String, MediaType> mediaTypes, final IProgressListener progressListener) {
         okhttp3.MultipartBody.Builder builder = new okhttp3.MultipartBody.Builder();
         if (kv != null && !kv.isEmpty()) {
-            for (Map.Entry<String, Object> entry : kv.entrySet()) {
-                builder.addFormDataPart(entry.getKey(), JSON.toJSONString(entry.getValue()));
+            for (Map.Entry<String, String> entry : kv.entrySet()) {
+                builder.addFormDataPart(entry.getKey(), entry.getValue());
             }
         }
 
-        final long[] fileBytes = {0, 0};
+        final long[] fileBytes = {0,0};
         if (files != null && !files.isEmpty()) {
             for (Map.Entry<String, File> fileEntry : files.entrySet()) {
                 File file = fileEntry.getValue();
@@ -160,8 +155,8 @@ public final class HttpRequestBody {
                 RequestBody body = createCustomRequestBody(mediaTypes.get(fileEntry.getKey()), file, new ProgressListener() {
                     @Override
                     public void onProgress(long totalBytes, long uploadBytes, boolean done) {
-                        if (progressListener != null) {
-                            progressListener.onProgress(fileBytes[0], totalBytes, fileBytes[1] + uploadBytes);
+                        if (progressListener !=null) {
+                            progressListener.onProgress(fileBytes[0],totalBytes,fileBytes[1]+ uploadBytes);
                         }
                         if (done) {
                             fileBytes[1] += totalBytes;
@@ -169,37 +164,6 @@ public final class HttpRequestBody {
                     }
                 });
                 builder.addFormDataPart(fileEntry.getKey(), file.getName(), body);
-            }
-        }
-
-        builder.setType(MultipartBody.FORM);
-        return new HttpRequestBody(builder.build());
-    }
-
-    public static HttpRequestBody createWithMultiForm(@Nullable Map<String, Object> kv, List<HttpPostRequestBuilder.FileBean> files, Map<String, MediaType> mediaTypes, final IProgressListener progressListener) {
-        okhttp3.MultipartBody.Builder builder = new okhttp3.MultipartBody.Builder();
-        if (kv != null && !kv.isEmpty()) {
-            for (Map.Entry<String, Object> entry : kv.entrySet()) {
-                builder.addFormDataPart(entry.getKey(), JSON.toJSONString(entry.getValue()));
-            }
-        }
-
-        final long[] fileBytes = {0, 0};
-        if (files != null && !files.isEmpty()) {
-            for (HttpPostRequestBuilder.FileBean fileBean : files) {
-                fileBytes[0] += fileBean.value.length();
-                RequestBody body = createCustomRequestBody(mediaTypes.get(fileBean.key), fileBean.value, new ProgressListener() {
-                    @Override
-                    public void onProgress(long totalBytes, long uploadBytes, boolean done) {
-                        if (progressListener != null) {
-                            progressListener.onProgress(fileBytes[0], totalBytes, fileBytes[1] + uploadBytes);
-                        }
-                        if (done) {
-                            fileBytes[1] += totalBytes;
-                        }
-                    }
-                });
-                builder.addFormDataPart(fileBean.key, fileBean.value.getName(), body);
             }
         }
 
@@ -226,10 +190,10 @@ public final class HttpRequestBody {
                     source = Okio.source(file);
                     Buffer buf = new Buffer();
                     int twoKb = 2048;
-                    long alReadCount = 0;
+                    long alReadCount=0;
                     for (long readCount; (readCount = source.read(buf, twoKb)) != -1; ) {
                         sink.write(buf, readCount);
-                        listener.onProgress(contentLength(), alReadCount += readCount, alReadCount == contentLength());
+                        listener.onProgress(contentLength(),  alReadCount+=readCount, alReadCount == contentLength());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -241,10 +205,9 @@ public final class HttpRequestBody {
     private interface ProgressListener {
         /**
          * 进度回调
-         *
          * @param singleFileBytes 当前文件的大小
-         * @param uploadBytes     剩余文件大小
-         * @param done            是否下载完成 true:完成 false:未完成
+         * @param uploadBytes 剩余文件大小
+         * @param done 是否下载完成 true:完成 false:未完成
          */
         void onProgress(long singleFileBytes, long uploadBytes, boolean done);
     }
@@ -252,10 +215,9 @@ public final class HttpRequestBody {
     public interface IProgressListener {
         /**
          * 进度回调
-         *
-         * @param allBytes        所有文件的大小
+         * @param allBytes 所有文件的大小
          * @param singleFileBytes 当前文件的大小
-         * @param uploadBytes     剩余文件大小
+         * @param uploadBytes 剩余文件大小
          */
         void onProgress(long allBytes, long singleFileBytes, long uploadBytes);
     }

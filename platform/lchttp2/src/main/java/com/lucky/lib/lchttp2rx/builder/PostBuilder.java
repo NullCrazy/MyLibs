@@ -26,8 +26,8 @@ import okhttp3.MediaType;
 public class PostBuilder extends HttpPostRequestBuilder implements Result {
     private Result delegate;
 
-    public PostBuilder(HttpClient httpClient,@REQUEST_TYPE int type) {
-        super(httpClient,type);
+    public PostBuilder(HttpClient httpClient) {
+        super(httpClient);
         delegate = new ReactiveResult(this);
     }
 
@@ -60,11 +60,6 @@ public class PostBuilder extends HttpPostRequestBuilder implements Result {
     @Override
     public PostBuilder paramGet(@NonNull String key, @Nullable Object value) {
         return (PostBuilder) super.paramGet(key, value);
-    }
-
-    public PostBuilder setMediaType(MediaType mediaType) {
-        this.mediaType = mediaType;
-        return this;
     }
 
     @Override

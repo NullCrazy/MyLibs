@@ -129,18 +129,17 @@ class HttpAesCrypto {
      * @throws IOException 解密时的异常
      */
     public static String decrypt(String target) throws IOException {
-        return target;
-//        try {
-//            Cipher cipher = Cipher.getInstance(ALGORITHM);
-//            cipher.init(Cipher.DECRYPT_MODE, initKey(signKey));
-//            String unsafeStr = target.replace(MINUS_SYMBOL, ADD_SYMBOL).replace(UNDER_LINE_SYMBOL, SLASH_SYMBOL);
-//            byte[] decryptResult = cipher.doFinal(Base64.decode(unsafeStr.getBytes(CHAR_SET)));
-//            return new String(decryptResult, CHAR_SET);
-//        } catch (Exception e) {
-//            HttpLog.d("数据解密异常:"+ e.toString());
-//            HttpLog.d("返回密文:"+target);
-//        }
-//        return "";
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, initKey(signKey));
+            String unsafeStr = target.replace(MINUS_SYMBOL, ADD_SYMBOL).replace(UNDER_LINE_SYMBOL, SLASH_SYMBOL);
+            byte[] decryptResult = cipher.doFinal(Base64.decode(unsafeStr.getBytes(CHAR_SET)));
+            return new String(decryptResult, CHAR_SET);
+        } catch (Exception e) {
+            HttpLog.d("数据解密异常:"+ e.toString());
+            HttpLog.d("返回密文:"+target);
+        }
+        return "";
     }
 
     /**

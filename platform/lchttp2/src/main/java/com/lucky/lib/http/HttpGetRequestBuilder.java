@@ -13,7 +13,7 @@ import okhttp3.Headers;
 import okhttp3.Request;
 
 /**
- * @Description:  Get请求的处理类
+ * @Description: Get请求的处理类
  * @Author: xmq mingqiang.xu@luckincoffee.com
  * @Date: 2019/4/24 上午11:29
  */
@@ -21,6 +21,7 @@ public class HttpGetRequestBuilder extends AbstractLcRequest {
 
     /**
      * Get请求的处理
+     *
      * @param httpClient 网络请求client
      */
     public HttpGetRequestBuilder(@NonNull HttpClient httpClient) {
@@ -34,6 +35,7 @@ public class HttpGetRequestBuilder extends AbstractLcRequest {
 
     /**
      * 组装get request
+     *
      * @return 请求request
      */
     @SuppressWarnings("unchecked")
@@ -50,7 +52,7 @@ public class HttpGetRequestBuilder extends AbstractLcRequest {
 //        builder.header(EVENT_ID,time);
         String uid = mClient.uid();
         if (!TextUtils.isEmpty(uid)) {
-            builder.header(UID,"bearer "+uid);
+            builder.header(UID, "bearer " + uid);
         }
         builder.tag(tag());
         builder.get();
@@ -59,14 +61,15 @@ public class HttpGetRequestBuilder extends AbstractLcRequest {
 
     /**
      * 获取get请求的url
+     *
      * @return get请求的url
      */
     @NonNull
     private StringBuilder getStringUrl() {
         StringBuilder url = new StringBuilder(baseUrl() + url());
         url.append(PARAMS);
-        Map<String, Object> requestParams = getRequestParams(params());
-        for (Map.Entry<String, Object> entry : requestParams.entrySet()) {
+        Map<String, String> requestParams = getRequestParams(params());
+        for (Map.Entry<String, String> entry : requestParams.entrySet()) {
             if (!TextUtils.isEmpty(entry.getKey()) && !TextUtils.isEmpty(JSON.toJSONString(entry.getValue()))) {
                 url.append(entry.getKey()).append(EQ).append(entry.getValue()).append(AND);
             }

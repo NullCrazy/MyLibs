@@ -68,7 +68,8 @@ public class HttpClient {
 
     /**
      * 初始化host
-     * @param context app上下文
+     *
+     * @param context  app上下文
      * @param listener DNS回调接口
      */
     public void initHost(@NonNull Context context, @NonNull HttpDnsListener listener) {
@@ -78,6 +79,7 @@ public class HttpClient {
 
     /**
      * 网络客户端
+     *
      * @param builder 构造类
      */
     public HttpClient(Builder builder) {
@@ -104,6 +106,7 @@ public class HttpClient {
 
     /**
      * 新的call
+     *
      * @param request 请求体
      * @return 网络调用call
      */
@@ -114,6 +117,7 @@ public class HttpClient {
 
     /**
      * 设置是否为同步
+     *
      * @param isSync 是否为同步  true: 是 false:不是
      */
     public void sync(boolean isSync) {
@@ -122,6 +126,7 @@ public class HttpClient {
 
     /**
      * 获取当前状态
+     *
      * @return 是否为同步  true: 是 false:不是
      */
     public boolean sync() {
@@ -130,6 +135,7 @@ public class HttpClient {
 
     /**
      * 设置cid
+     *
      * @param cid 端的对应capi 的cid
      */
     private void cid(String cid) {
@@ -138,6 +144,7 @@ public class HttpClient {
 
     /**
      * 获取cid
+     *
      * @return 端的对应capi 的cid
      */
     @NonNull
@@ -147,6 +154,7 @@ public class HttpClient {
 
     /**
      * 获取baseURL
+     *
      * @return 网络请求基础URL
      */
     @NonNull
@@ -159,6 +167,7 @@ public class HttpClient {
 
     /**
      * 设置baseURL
+     *
      * @param baseurl 网络请求基础URL
      */
     private void baseUrl(String baseurl) {
@@ -167,6 +176,7 @@ public class HttpClient {
 
     /**
      * 获取uid
+     *
      * @return 标记用户的uid
      */
     @NonNull
@@ -176,6 +186,7 @@ public class HttpClient {
 
     /**
      * 设置uid
+     *
      * @param uid 网络请求的uid
      * @return 网络客户端
      */
@@ -186,6 +197,7 @@ public class HttpClient {
 
     /**
      * 设置app版本号
+     *
      * @param appVersion app版本号
      */
     private void appVersion(String appVersion) {
@@ -194,6 +206,7 @@ public class HttpClient {
 
     /**
      * 获取app版本号
+     *
      * @return app版本号
      */
     public String appVersion() {
@@ -203,6 +216,7 @@ public class HttpClient {
 
     /**
      * 获取monitor监听
+     *
      * @return monitor监听
      */
     LcMonitorListener monitorListener() {
@@ -211,6 +225,7 @@ public class HttpClient {
 
     /**
      * 设置monitor监听
+     *
      * @param monitorListener monitor监听
      */
     private void monitorListener(LcMonitorListener monitorListener) {
@@ -219,6 +234,7 @@ public class HttpClient {
 
     /**
      * 发起get 请求
+     *
      * @return 网络客户端{@link HttpGetRequestBuilder}
      */
     public HttpGetRequestBuilder get() {
@@ -231,30 +247,12 @@ public class HttpClient {
      * @return 网络客户端{@link HttpPostRequestBuilder}
      */
     public HttpPostRequestBuilder post() {
-        return new HttpPostRequestBuilder(this,HttpPostRequestBuilder.POST);
+        return new HttpPostRequestBuilder(this);
     }
-
-    /**
-     * 发起post 请求
-     *
-     * @return 网络客户端{@link HttpPostRequestBuilder}
-     */
-    public HttpPostRequestBuilder put() {
-        return new HttpPostRequestBuilder(this,HttpPostRequestBuilder.PUT);
-    }
-
-    /**
-     * 发起post 请求
-     *
-     * @return 网络客户端{@link HttpPostRequestBuilder}
-     */
-    public HttpPostRequestBuilder delete() {
-        return new HttpPostRequestBuilder(this,HttpPostRequestBuilder.DELETE);
-    }
-
 
     /**
      * cancel 根据tag取消某一网络请求。注意此处的tag不为null
+     *
      * @param tag tag不能为null tag is no null
      */
     public void cancel(@NonNull Object tag) {
@@ -367,6 +365,7 @@ public class HttpClient {
 
         /**
          * 设置端的对应capi 的cid
+         *
          * @param cid 端的对应capi 的cid
          * @return 网络builder类
          */
@@ -377,6 +376,7 @@ public class HttpClient {
 
         /**
          * 设置baseURL
+         *
          * @param baseurl baseurl基础请求
          * @return 网络builder类
          */
@@ -387,6 +387,7 @@ public class HttpClient {
 
         /**
          * 设置signKey签名
+         *
          * @param signKey 签名
          * @return 网络builder类
          */
@@ -397,6 +398,7 @@ public class HttpClient {
 
         /**
          * 设置uid
+         *
          * @param uid 用户uid
          * @return 网络builder类
          */
@@ -407,6 +409,7 @@ public class HttpClient {
 
         /**
          * 重试次数
+         *
          * @param retryTime 重试的次数
          * @return 网络builder类
          */
@@ -417,6 +420,7 @@ public class HttpClient {
 
         /**
          * 开启缓存
+         *
          * @param openCache 缓存开关 true：开启 false:关闭
          * @return 网络builder类
          */
@@ -427,6 +431,7 @@ public class HttpClient {
 
         /**
          * 设置缓存文件
+         *
          * @param cacheFile 缓存文件
          * @return 网络builder类
          */
@@ -437,6 +442,7 @@ public class HttpClient {
 
         /**
          * 设置版本号
+         *
          * @param appVersion 版本号
          * @return 网络builder类
          */
@@ -447,6 +453,7 @@ public class HttpClient {
 
         /**
          * 设置monitor
+         *
          * @param monitorListener monitor回调监听
          * @return 网络builder类
          */
@@ -457,6 +464,7 @@ public class HttpClient {
 
         /**
          * 设置连接超时时间
+         *
          * @param connectionTimeOut 超时时间
          * @return 网络builder类
          */
@@ -469,6 +477,7 @@ public class HttpClient {
 
         /**
          * 设置读超时时间
+         *
          * @param readTimeOut 超时时间
          * @return 网络builder类
          */
@@ -481,6 +490,7 @@ public class HttpClient {
 
         /**
          * 设置写超时时间
+         *
          * @param writeTimeOut 超时时间
          * @return 网络builder类
          */
@@ -493,6 +503,7 @@ public class HttpClient {
 
         /**
          * 设置日志接口
+         *
          * @param log 日志接口
          * @return 网络builder类
          */
@@ -503,6 +514,7 @@ public class HttpClient {
 
         /**
          * 增加拦截器
+         *
          * @param interceptor 拦截器
          */
         public void addInterceptor(Interceptor interceptor) {
@@ -514,6 +526,7 @@ public class HttpClient {
 
         /**
          * 网络拦截器
+         *
          * @return 网络拦截器列表
          */
         public List<Interceptor> networkInterceptors() {
@@ -522,6 +535,7 @@ public class HttpClient {
 
         /**
          * 增加网络拦截器
+         *
          * @param interceptor 拦截器
          * @return 网络builder
          */
@@ -529,7 +543,7 @@ public class HttpClient {
             if (interceptor == null) {
                 throw new IllegalArgumentException("interceptor == null");
             } else {
-                if (networkInterceptors ==null) {
+                if (networkInterceptors == null) {
                     networkInterceptors = new ArrayList<>();
                 }
                 this.networkInterceptors.add(interceptor);
@@ -539,6 +553,7 @@ public class HttpClient {
 
         /**
          * 构造网络client
+         *
          * @return 网络client
          */
         public HttpClient build() {
@@ -548,6 +563,7 @@ public class HttpClient {
 
     /**
      * 获得Client
+     *
      * @param innerBuilder 构造类
      * @return 用户Client类型
      */
@@ -592,15 +608,15 @@ public class HttpClient {
         builder.dns(new HttpDns(innerBuilder.mMonitorListener));
         //增加okhttp缓存（仅支持get型请求）
         if (innerBuilder.openCache) {
-            builder.cache(new Cache(innerBuilder.cacheFile,innerBuilder.cacheSize));
+            builder.cache(new Cache(innerBuilder.cacheFile, innerBuilder.cacheSize));
         }
 
-        if (innerBuilder.mInterceptorList !=null) {
+        if (innerBuilder.mInterceptorList != null) {
             for (Interceptor in : innerBuilder.mInterceptorList) {
                 builder.addInterceptor(in);
             }
         }
-        if (innerBuilder.networkInterceptors !=null) {
+        if (innerBuilder.networkInterceptors != null) {
             for (Interceptor networkInterceptor : innerBuilder.networkInterceptors) {
                 builder.addNetworkInterceptor(networkInterceptor);
             }
@@ -624,28 +640,28 @@ public class HttpClient {
         /**
          * dns打点,子类dns解析回调
          *
-         * @param domain 域名
-         * @param ip 网络解析ip
+         * @param domain   域名
+         * @param ip       网络解析ip
          * @param hijackIp 本地劫持ip
-         * @param remark 备注
+         * @param remark   备注
          */
         void dns(@NonNull String domain, @NonNull String ip, @NonNull String hijackIp, @NonNull String remark);
 
         /**
          * api 异常打点，网络api请求异常时子类回调
          *
-         * @param exceptionCode 异常码
+         * @param exceptionCode  异常码
          * @param exceptionStack 异常栈信息
-         * @param remark 备注
+         * @param remark         备注
          */
         void busiException(@NonNull String exceptionCode, @Nullable Throwable exceptionStack, @NonNull String remark);
 
         /**
          * 网络异常打点，网络通道异常时子类回调
          *
-         * @param exceptionCode 异常码
+         * @param exceptionCode  异常码
          * @param exceptionStack 异常栈信息
-         * @param remark 备注
+         * @param remark         备注
          */
         void networkException(@NonNull String exceptionCode, @Nullable Throwable exceptionStack, @NonNull String remark);
     }
